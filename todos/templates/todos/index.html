@@ -1,0 +1,82 @@
+{% extends 'todos/base.html' %}
+
+{% block title %}
+<title>Todo List Application</title>
+{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<header style="background-color: #34495e; padding: 20px 0; color: white; text-align: center;">
+  <h1 style="font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 2.5rem; margin: 0;">Todo List Application</h1>
+  <p style="font-size: 1.2rem;">A simple and elegant task management tool for daily use</p>
+</header>
+
+<!-- Main Content Section -->
+<div class="container" style="background-color: #f4f7fa; padding: 30px; border-radius: 10px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+
+  <!-- Title Row -->
+  <div class="row mb-4">
+    <div class="offset-md-2 col-lg-9 text-center">
+      <h2 style="font-family: 'Arial', sans-serif; color: #2c3e50;">Todo List - Batch 5</h2>
+      <p style="font-size: 1.1rem; color: #7f8c8d;">Stay organized and track your progress effectively</p>
+    </div>
+  </div>
+
+  <!-- Add a Todo Row -->
+  <div class="row mb-4">
+    <div class="offset-md-2 col-lg-9">
+      <form method="post" action="{% url 'todos:add' %}">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="col-md-8">
+            <input type="text" class="form-control" name="title" placeholder="Enter a new task" required
+              style="border-radius: 20px; padding: 15px; border: 1px solid #ddd; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+          </div>
+          <div class="col-md-4">
+            <button type="submit" name="submit" class="btn btn-primary btn-block"
+              style="border-radius: 20px; font-weight: bold; padding: 12px; background-color: #2980b9; border: none;">
+              Add Task
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Todo List Row -->
+  <div class="row">
+    <div class="offset-md-2 col-lg-8">
+      <div class="list-group" style="background-color: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); padding: 15px;">
+        {% if todo_list %}
+        {% for todo in todo_list %}
+        <div class="list-group-item {% if todo.isCompleted %} todo-complete {% endif %}"
+          style="padding: 15px; border-radius: 10px; margin-bottom: 10px; background-color: #f9f9f9; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+          <form style="display: inline;" method="post" action="{% url 'todos:update' todo.id %}">
+            {% csrf_token %}
+            <input type="checkbox" name="isCompleted" onchange="this.form.submit()" {% if todo.isCompleted %} checked {% endif %}
+              class="todo-status-checkbox" title="{% if not todo.isCompleted %} mark as done {% else %} mark undone {% endif %}"
+              style="cursor: pointer; transform: scale(1.5); margin-right: 15px;">
+          </form>
+          <span style="font-size: 18px; color: #34495e; {% if todo.isCompleted %} text-decoration: line-through; color: #7f8c8d; {% endif %}">
+            {{ todo.title }}
+          </span>
+          <a href="{% url 'todos:delete' todo.id %}" title="Delete" style="float: right; color: #e74c3c; font-size: 20px;">
+            <i class="far fa-trash-alt"></i>
+          </a>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-center" style="color: #7f8c8d;">No tasks available. Start by adding a new task!</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Section -->
+<footer style="background-color: #34495e; padding: 10px; margin-top: 20px;">
+  <p style="text-align: center; color: white; margin: 0;">&copy; 2025 Todo List App | Built with ❤ by Tej Mandaliya</p>
+</footer>
+
+{% endblock %}
+

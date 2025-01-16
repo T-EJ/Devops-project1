@@ -1,21 +1,15 @@
-# Build stage
-FROM node:16 as build
-WORKDIR /app
+FROM python:3
 
-# Install dependencies
-COPY package*.json ./
-RUN npm install
+WORKDIR /data
 
-# Copy source files and build
+RUN pip install django==5.1.5
+
 COPY . .
-RUN npm run build
 
-# Production stage
-FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
+RUN python manage.py migrate
 
-# Expose port 80
-EXPOSE 80
+EXPOSE 8000
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["python","manage.py","runserver","0.0.0.0:8000"]
+
 
